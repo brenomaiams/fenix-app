@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telaoficina/bd/conexao.dart';
 import 'package:telaoficina/pages/Telainicial.dart';
 import 'package:telaoficina/pages/cadastroClientes.dart';
 import 'package:telaoficina/pages/checklist.dart';
@@ -6,7 +7,9 @@ import 'package:telaoficina/pages/menu.dart';
 import 'package:telaoficina/pages/telaOs.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Conexao.instance.init();
   runApp(const MyApp());
 }
 

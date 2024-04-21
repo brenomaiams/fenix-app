@@ -40,34 +40,34 @@ class _telaChecklistState extends State<telaChecklist> {
           children: [
             TextField(
               decoration: InputDecoration(
-                labelText: 'Nome do Cliente:',
-
+                labelText: 'Nome do Cliente',
+                prefixIcon: Icon(Icons.person),
               ),
             ),
             TextField(
               decoration: InputDecoration(
-                labelText: 'Telefone:',
-
+                labelText: 'Telefone',
+                prefixIcon: Icon(Icons.phone),
               ),
               keyboardType: TextInputType.phone,
             ),
             TextField(
               decoration: InputDecoration(
-                labelText: 'Modelo:',
-
+                labelText: 'Modelo',
+                prefixIcon: Icon(Icons.car_repair),
               ),
             ),
             TextField(
               decoration: InputDecoration(
-                labelText: 'Ano:',
-
+                labelText: 'Ano',
+                prefixIcon: Icon(Icons.calendar_today),
               ),
               keyboardType: TextInputType.number,
             ),
             TextField(
               decoration: InputDecoration(
-                labelText: 'Placa:',
-
+                labelText: 'Placa',
+                prefixIcon: Icon(Icons.directions_car),
               ),
               textCapitalization: TextCapitalization.characters,
             ),
@@ -75,7 +75,6 @@ class _telaChecklistState extends State<telaChecklist> {
               children: [
                 Text(
                   'Possui Avarias?',
-
                 ),
                 Transform.scale(
                   scale: 0.8,
@@ -94,7 +93,7 @@ class _telaChecklistState extends State<telaChecklist> {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Digite aqui as avarias existentes',
-
+                  prefixIcon: Icon(Icons.warning),
                 ),
               ),
           ],

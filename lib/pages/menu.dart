@@ -43,15 +43,7 @@ class Menu extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Image.asset(
-                        "assets/martelo.png",
-                        height: 200,
-                        width: 200,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
+                    AnimatedHammerIcon(),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -105,12 +97,58 @@ class Menu extends StatelessWidget {
                     ),
                   ],
                 ),
-
               ),
             ),
           ),
         ),
       ),
     );
+  }
+}
+
+class AnimatedHammerIcon extends StatefulWidget {
+  @override
+  _AnimatedHammerIconState createState() => _AnimatedHammerIconState();
+}
+
+class _AnimatedHammerIconState extends State<AnimatedHammerIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, 20 * _controller.value - 10),
+          child: child,
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Image.asset(
+          "assets/martelo.png",
+          height: 200,
+          width: 200,
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

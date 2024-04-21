@@ -2,10 +2,9 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Conexao {
-  static const _dbname = "fenixdb";
-  static const _sqlscript =
-      'CREATE TABLE clientes(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, cpf TEXT,'
-      'cep TEXT, endereco TEXT, numerocasa INT, placa TEXT, modelo TEXT)';
+  static const _dbname = "fenix.db";
+  static const _sqlScript =
+      'CREATE TABLE clientes(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, cpf TEXT, cep TEXT, endereco TEXT, numerocasa TEXT, placa TEXT, modelo TEXT)';
 
   static const table = 'clientes';
   static const columnId = 'id';
@@ -25,6 +24,11 @@ class Conexao {
   Future<Database> get database async {
     return _database ??= await initDB();
   }
+
+  Future<void> init() async {
+    _database = await initDB();
+  }
+
   static Future<String> getDatabasePath() async {
     String databasesPath = await getDatabasesPath();
     return join(databasesPath, _dbname);
@@ -33,9 +37,9 @@ class Conexao {
 
   Future<Database> initDB() async {
     return openDatabase(
-      join((await getDatabasesPath()), _dbname),
+      join(await getDatabasesPath(), _dbname),
         onCreate: (db, version) {
-        return db.execute(_sqlscript);
+        return db.execute(_sqlScript);
         },
       version: 1,
     );

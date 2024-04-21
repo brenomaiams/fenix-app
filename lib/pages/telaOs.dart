@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:telaoficina/pages/Telainicial.dart'; // Importe a tela inicial aqui
+import 'package:telaoficina/pages/Telainicial.dart'; //
 import 'package:telaoficina/pages/Telainicial.dart';
 
 class telaOS extends StatefulWidget {
@@ -43,6 +43,7 @@ class _MyWidgetState extends State<telaOS> {
                 controller: _nomeClienteController,
                 decoration: InputDecoration(
                   labelText: 'Nome do Cliente',
+                  prefixIcon: Icon(Icons.person),
                 ),
               ),
             ),
@@ -52,6 +53,7 @@ class _MyWidgetState extends State<telaOS> {
                 controller: _placaCarroController,
                 decoration: InputDecoration(
                   labelText: 'Placa do Carro',
+                  prefixIcon: Icon(Icons.directions_car),
                 ),
               ),
             ),
@@ -69,6 +71,8 @@ class _MyWidgetState extends State<telaOS> {
       floatingActionButton: FloatingActionButton(
         onPressed: _adicionarLinha,
         child: Icon(Icons.add),
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
       ),
     );
   }

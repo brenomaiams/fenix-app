@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:telaoficina/pages/checklist.dart';
 import 'package:telaoficina/cores/minhasCores.dart';
-import 'package:telaoficina/pages/rotas.dart';
-import 'package:telaoficina/pages/Telainicial.dart';
 
 class Telainicial extends StatelessWidget {
   const Telainicial({Key? key}) : super(key: key);
@@ -27,7 +24,7 @@ class Telainicial extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Center(child: Image.asset("assets/logo.png", height: 190)),
+              AnimatedLogo(),
               const SizedBox(height: 5),
               const Text(
                 'FenixApp',
@@ -75,5 +72,46 @@ class Telainicial extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class AnimatedLogo extends StatefulWidget {
+  @override
+  _AnimatedLogoState createState() => _AnimatedLogoState();
+}
+
+class _AnimatedLogoState extends State<AnimatedLogo>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, 20 * _controller.value - 10),
+          child: child,
+        );
+      },
+      child: Center(
+        child: Image.asset("assets/logo.png", height: 190),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
