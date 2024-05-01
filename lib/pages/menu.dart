@@ -130,7 +130,7 @@ class _AnimatedHammerIconState extends State<AnimatedHammerIcon>
       animation: _controller,
       builder: (context, child) {
         return Transform.translate(
-          offset: Offset(0, 20 * _controller.value - 10),
+          offset: Offset(0, 5 * _controller.value - 3),
           child: child,
         );
       },

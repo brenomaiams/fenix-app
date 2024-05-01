@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:telaoficina/pages/Telainicial.dart'; //
-import 'package:telaoficina/pages/Telainicial.dart';
+
+
 
 class telaOS extends StatefulWidget {
   const telaOS({Key? key}) : super(key: key);

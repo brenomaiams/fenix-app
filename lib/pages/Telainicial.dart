@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:telaoficina/cores/minhasCores.dart';
 
 class Telainicial extends StatelessWidget {
+
   const Telainicial({Key? key}) : super(key: key);
 
   @override
@@ -99,7 +100,7 @@ class _AnimatedLogoState extends State<AnimatedLogo>
       animation: _controller,
       builder: (context, child) {
         return Transform.translate(
-          offset: Offset(0, 20 * _controller.value - 10),
+          offset: Offset(0, 5 * _controller.value - 3),
           child: child,
         );
       },
