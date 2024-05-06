@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:telaoficina/bd/conexao.dart';
 import 'package:telaoficina/cores/minhasCores.dart';
-
+import 'package:telaoficina/pages/detalhes_cliente.dart';
 class ClienteDTO {
   int? id;
   String nome;
@@ -68,38 +68,44 @@ class _CadastroClientesState extends State<CadastroClientes> {
   }
 
   Future<void> _saveCliente() async {
-    ClienteDTO clienteDTO = ClienteDTO(
-      id: null,
-      nome: nomeController.text,
-      cpf: cpfController.text,
-      cep: cepController.text,
-      endereco: enderecoController.text,
-      numeroCasa: numeroCasaController.text,
-      modelo: modeloController.text,
-    );
-    
-    final db = Conexao.instance.database;
-    final dbClient = await db;
-    await dbClient.insert(Conexao.table, clienteDTO.toMap());
+  ClienteDTO clienteDTO = ClienteDTO(
+    id: null,
+    nome: nomeController.text,
+    cpf: cpfController.text,
+    cep: cepController.text,
+    endereco: enderecoController.text,
+    numeroCasa: numeroCasaController.text, // Aqui o valor atualizado é passado
+    modelo: modeloController.text,
+  );
 
-    print("Cliente salvo com sucesso");
 
-    // Atualizar a lista de clientes na aba "Início"
-    Inicio? inicio = context.findAncestorWidgetOfExactType<Inicio>();
-    if (inicio != null) {
-      await inicio.updateClientesList();
+  print('Numero Casa: ${clienteDTO.numeroCasa}');
+  print('ClienteDTO antes da inserção: ${clienteDTO.toMap()}');
+
+
+
+
+  final db = Conexao.instance.database;
+  final dbClient = await db;
+  await dbClient.insert(Conexao.table, clienteDTO.toMap());
+
+  print("Cliente salvo com sucesso");
+
+  Inicio? inicio = context.findAncestorWidgetOfExactType<Inicio>();
+  if (inicio != null) {
+    await inicio.updateClientesList();
+  }
+
+  setState(() {
+    nomeController.clear();
+    cpfController.clear();
+    cepController.clear();
+    enderecoController.clear();
+    numeroCasaController.clear();
+    modeloController.clear();
+  });
 }
 
-    setState(() {
-      // Resetar os campos após salvar o cliente
-      nomeController.clear();
-      cpfController.clear();
-      cepController.clear();
-      enderecoController.clear();
-      numeroCasaController.clear();
-      modeloController.clear();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,29 +113,19 @@ class _CadastroClientesState extends State<CadastroClientes> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: MinhasCores.vermelhoescuro,
           title: Text(
             'Cadastro de Clientes',
-            style: TextStyle(
-              color: MinhasCores.preto,
-              fontSize: 24,
-            ),
+            style: TextStyle(fontSize: 24),
           ),
           bottom: TabBar(
             tabs: [
               Tab(
                 icon: Icon(Icons.add),
-                child: Text(
-                  'Cadastro',
-                  style: TextStyle(color: MinhasCores.preto),
-                ),
+                text: 'Cadastro',
               ),
               Tab(
                 icon: Icon(Icons.home),
-                child: Text(
-                  'Início',
-                  style: TextStyle(color: MinhasCores.preto),
-                ),
+                text: 'Clientes',
               ),
             ],
           ),
@@ -174,15 +170,17 @@ class _CadastroClientesState extends State<CadastroClientes> {
                   child: Text('Salvar'),
                 ),
                 ElevatedButton(
-                  onPressed: () async{
+                  onPressed: () async {
                     await Conexao.instance.deleteAllClientes();
-                    Inicio? inicio = context.findAncestorWidgetOfExactType<Inicio>();
-                     if (inicio != null) {
+                    Inicio? inicio =
+                        context.findAncestorWidgetOfExactType<Inicio>();
+                    if (inicio != null) {
                       await inicio.updateClientesList();
-                  }
-                },
-                child: Text('Apagar todos os clientes'),
-            )],
+                    }
+                  },
+                  child: Text('Apagar todos os clientes'),
+                )
+              ],
             ),
             Inicio(),
           ],
@@ -192,9 +190,12 @@ class _CadastroClientesState extends State<CadastroClientes> {
   }
 }
 
+
 class Inicio extends StatefulWidget {
   @override
   _InicioState createState() => _InicioState();
+
+  void updateCliente(ClienteDTO cliente) {}
   
   updateClientesList() {}
 }
@@ -211,7 +212,7 @@ class _InicioState extends State<Inicio> {
 
   Future<void> updateClientesList() async {
     final db = await Conexao.instance.database;
-    // ignore: unnecessary_null_comparison
+
     if (db != null) {
       List<ClienteDTO> clientesList = await Conexao.instance.getAllClientes();
 
@@ -221,28 +222,95 @@ class _InicioState extends State<Inicio> {
     }
   }
 
+  Future<void> _deleteCliente(int? id) async {
+    await Conexao.instance.deleteCliente(id);
+    await updateClientesList();
+  }
+
+  void updateCliente(ClienteDTO cliente) {
+    final index = clientes.indexWhere((c) => c.id == cliente.id);
+    if (index != -1) {
+      setState(() {
+        clientes[index] = cliente;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Visualização de Dados',
-            style: TextStyle(fontSize: 18),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: clientes.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(clientes[index].nome),
-                subtitle: Text(clientes[index].cpf),
-              );
-            },
-          ),
-        ],
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Clientes Cadastrados',
+              style: TextStyle(fontSize: 18),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: clientes.length,
+              itemBuilder: (context, index) {
+                final cliente = clientes[index];
+                return Card(
+                  child: ListTile(
+                    title: Text(cliente.nome),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('CPF: ${cliente.cpf}'),
+                        Text('CEP: ${cliente.cep}'),
+                        Text('Endereço: ${cliente.endereco}'),
+                        Text('Número da Casa: ${cliente.numeroCasa}'),
+                        Text('Modelo: ${cliente.modelo}'),
+                      ],
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Confirmar exclusão'),
+                              content: Text(
+                                  'Tem certeza de que deseja excluir este cliente?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('Cancelar'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text('Excluir'),
+                                  onPressed: () {
+                                    _deleteCliente(cliente.id);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DetalhesCliente(cliente: cliente),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

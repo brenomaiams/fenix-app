@@ -5,7 +5,7 @@ import 'package:telaoficina/pages/cadastroClientes.dart';
 class Conexao {
   static const _dbname = "fenix.db";
   static const _sqlScript =
-      'CREATE TABLE clientes(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, cpf TEXT, cep TEXT, endereco TEXT, numerocasa TEXT,  modelo TEXT)';
+      'CREATE TABLE clientes(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, cpf TEXT, cep TEXT, endereco TEXT, numeroCasa TEXT,  modelo TEXT)';
 
   static const table = 'clientes';
   static const columnId = 'id';
@@ -13,7 +13,7 @@ class Conexao {
   static const columnCpf = 'cpf';
   static const columnCep = 'cep';
   static const columnEndereco = 'endereco';
-  static const columnNumeroCasa = 'numerocasa';
+  static const columnNumeroCasa = 'numeroCasa';
   static const columnModelo = 'modelo';
 
   Conexao._privateConstructor();
@@ -35,19 +35,22 @@ class Conexao {
   }
 
   Future<Database> initDB() async {
+    print('Iniciando o banco de dados...');
     return openDatabase(
       join(await getDatabasesPath(), _dbname),
       onCreate: (db, version) async {
         await db.execute(_sqlScript);
+        print('Banco de dados criado.');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await db.execute('ALTER TABLE clientes ADD COLUMN placaCarro TEXT');
         }
       },
-      version: 2,
+      version: 3,
     );
   }
+
   Future<void> deleteAllClientes() async {
     final db = await database;
     await db.delete(table);
@@ -61,4 +64,30 @@ class Conexao {
       return ClienteDTO.fromMap(maps[i]);
     });
   }
+
+  Future<void> deleteCliente(int? id) async {
+    await _database?.delete(
+      table,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> updateCliente(ClienteDTO cliente) async {
+    final db = await database;
+    await db.update(
+      table,
+      cliente.toMap(),
+      where: 'id = ?',
+      whereArgs: [cliente.id],
+    );
+  }
+
+  Future<void> updateClienteEdit(ClienteDTO cliente) async {
+    final dbClient = await database;
+    await dbClient.update(table, cliente.toMap(),
+        where: 'id = ?', whereArgs: [cliente.id]);
+  }
+
+  
 }
